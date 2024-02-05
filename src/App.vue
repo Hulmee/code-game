@@ -199,6 +199,9 @@
     guess = ref(''),
     code = ref(''),
     guesses = ref([]),
+    sortedGuesses = computed(() => {
+      return guesses.value.sort((a, b) => b.attempt - a.attempt)
+    }),
     winner = ref(false),
     geneNumber = (isHexadecimal = true) => {
       // Generate a random number between 0 and 65535 (0xFFFF in hexadecimal)
