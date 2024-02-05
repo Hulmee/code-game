@@ -1,0 +1,84 @@
+// @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,400;1,700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap');
+
+@import './colors';
+
+* {
+  // font-family: 'Open Sans', sans-serif;
+  font-family: 'JetBrains Mono', monospace;
+  /* css reset  */
+  padding: 0;
+  margin: 0;
+
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+
+  box-sizing: border-box;
+  list-style: none;
+
+  select {
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    padding: 0 1em 0 0;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+    outline: none;
+  }
+
+  -webkit-user-select: none;
+  /* Safari */
+  -ms-user-select: none;
+  /* IE 10 and IE 11 */
+  user-select: none;
+  touch-action: none;
+}
+
+button,
+input[type='text'],
+input[type='number'] {
+  all: unset;
+  display: block;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+html {
+  height: 100vh;
+  width: 100vw;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  background: red;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bdr {
+  border: dotted 1px red;
+}
+
+#app {
+  height: 100vh;
+  width: 100vw;
+  overflow: none;
+}

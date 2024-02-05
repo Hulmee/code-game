@@ -1,0 +1,159 @@
+@import './assets/base';
+// @import '@vueform/slider/themes/default.css';
+@import '@vueform/toggle/themes/default.css';
+
+// button {
+//   border: solid 1px;
+//   border-color: var(--TX-Color);
+//   border-radius: 0.2em;
+//   margin: 1px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   flex-direction: column;
+//   &:active {
+//     background: $info;
+//     color: $light;
+//     p {
+//       font-weight: bold;
+//     }
+//   }
+//   &.active {
+//     // background: $gold;
+//     background: $info;
+//     color: $dark;
+//     font-weight: bold;
+//   }
+//   &.mute {
+//     background: $fail;
+//     color: $light;
+//   }
+//   &:disabled {
+//     opacity: 0.5;
+//   }
+//   p {
+//     text-align: center;
+//   }
+//   @media screen and (min-width: 641px) {
+//     svg {
+//       font-size: 2em;
+//     }
+//   }
+//   @media screen and (max-width: 641px) {
+//     h3 {
+//       font-size: 1em;
+//     }
+//   }
+// }
+
+#main {
+  &.dark {
+    --BG-Color: #3c4040;
+    --BG-trans: rgba(60, 64, 64, 0.7);
+    --TX-Color: #efe6dd;
+    background-color: $dark;
+    color: $light;
+    transition: background-color 500ms ease-in-out, color 500ms;
+  }
+  &.light {
+    --BG-Color: #efe6dd;
+    --BG-trans: rgba(239, 230, 221, 0.7);
+    --TX-Color: #3c4040;
+    background-color: $light;
+    color: $dark;
+    transition: background-color 500ms ease-in-out, color 500ms;
+  }
+}
+.modal {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--BG-trans);
+  // background: rgba(60, 64, 64, 0.7);
+  color: var(--TX-Color);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  transition: background-color 500ms ease-in-out, color 500ms;
+
+  .modal-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+    height: 75%;
+    width: 75%;
+    background: var(--BG-Color);
+    color: var(--TX-Color);
+    filter: drop-shadow(10px 10px 10px var(--TX-Color));
+    border-radius: 1em;
+    border: solid 1px var(--TX-Color);
+    text-align: center;
+    transition: background-color 500ms ease-in-out, color 500ms;
+  }
+}
+
+// custom slider styles
+:root {
+  // --slider-connect-bg: #7226E0; HESTA Colours
+  --slider-connect-bg: #c19e47;
+  // --slider-tooltip-bg: #7226E0;
+  // --slider-handle-ring-color: #201547; HESTA Colours
+  --slider-handle-ring-color: #3c4040;
+  --slider-handle-height: 2em;
+  --slider-height: 1em;
+  --slider-bg: none;
+}
+
+.slider {
+  margin-right: 1em;
+  width: 15%;
+}
+.slider-base {
+  .slider-connects {
+    border: solid 1px white;
+  }
+}
+#main-vol-con {
+  .slider-target {
+    .slider-base {
+      .slider-connects {
+        border-color: #3c4040;
+      }
+    }
+  }
+}
+
+svg {
+  height: 2em;
+}
+.hide {
+  visibility: hidden;
+}
+// Transition Styles
+.fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.7s ease;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
