@@ -32,13 +32,6 @@
     line-height: inherit;
     outline: none;
   }
-
-  -webkit-user-select: none;
-  /* Safari */
-  -ms-user-select: none;
-  /* IE 10 and IE 11 */
-  user-select: none;
-  touch-action: none;
 }
 
 button,
@@ -78,7 +71,7 @@ body {
 }
 
 #app {
-  height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100dvw;
   overflow: none;
 }
