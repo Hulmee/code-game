@@ -15,6 +15,11 @@ export default defineConfig({
     vue(),
     VitePWA({
       manifest: {
+        name: 'Crack the Code ',
+        short_name: 'CodeCrack',
+        description:
+          'Challenge your mind with this engaging 4-digit code guessing game.',
+        theme_color: '#3c4040',
         icons: [
           {
             src: 'lock.svg',

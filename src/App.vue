@@ -18,28 +18,44 @@
         class="section"
         id="game-cons">
         <div
-          id="game-mode"
-          class="">
+          style="margin-bottom: 0.5rem"
+          class="game-mode">
           <label
+            class=""
             style="margin-left: 0.5rem"
             for=""
-            >Decimal</label
+            >Number Type:</label
           >
           <Toggle
-            v-model="codetype"
+            v-model="codeType"
             on-label="Hex"
             off-label="Dec"
             @change="newGame" />
+        </div>
+        <div
+          id=""
+          class="game-mode">
           <label
-            style="margin-right: 0.5rem"
+            style="margin-left: 0.5rem"
             for=""
-            >Hexadecimal</label
+            >Game Mode:</label
           >
+          <Toggle
+            v-model="mode"
+            on-label="Normal"
+            off-label="Easy"
+            @change="newGame"
+            class="mode" />
         </div>
         <div
           id="guess"
           class="container">
-          <p>{{ guess }}</p>
+          <p class="guess-val">{{ guess }}</p>
+          <p
+            @click="handelClear"
+            class="clear">
+            x
+          </p>
         </div>
         <div id="keypad">
           <button
@@ -58,7 +74,7 @@
             3
           </button>
           <button
-            :disabled="!codetype"
+            :disabled="!codeType"
             @click="addToGuess"
             value="A">
             A
@@ -79,7 +95,7 @@
             6
           </button>
           <button
-            :disabled="!codetype"
+            :disabled="!codeType"
             @click="addToGuess"
             value="B">
             B
@@ -100,13 +116,13 @@
             9
           </button>
           <button
-            :disabled="!codetype"
+            :disabled="!codeType"
             @click="addToGuess"
             value="C">
             C
           </button>
           <button
-            :disabled="!codetype"
+            :disabled="!codeType"
             @click="addToGuess"
             value="D">
             D
@@ -117,13 +133,13 @@
             0
           </button>
           <button
-            :disabled="!codetype"
+            :disabled="!codeType"
             @click="addToGuess"
             value="E">
             E
           </button>
           <button
-            :disabled="!codetype"
+            :disabled="!codeType"
             @click="addToGuess"
             value="F">
             F
@@ -151,24 +167,46 @@
         </div>
         <div class="section guesses">
           <h4 class="container">
-            <span class="">Guess</span><span>Code</span><span>Correct</span>
+            <span class="guess-attempt">Guess</span
+            ><span class="guess-code">Code</span
+            ><span class="guess-correct">Correct</span>
           </h4>
-          <p
-            class="container"
-            v-for="guess in sortedGuesses"
-            :key="guess.attempt">
-            <span>{{ guess.attempt }}</span
-            ><span>{{ guess.code }}</span
-            ><span
-              :class="{
-                fail: guess.corect == 0,
-                something: guess.corect == 1,
-                better: guess.corect == 2,
-                almost: guess.corect == 3,
-              }">
-              {{ guess.corect }}</span
-            >
-          </p>
+          <TransitionGroup name="slide-fade">
+            <p
+              class="container"
+              v-for="guess in sortedGuesses"
+              :key="guess.attempt">
+              <span class="guess-attempt">{{ guess.attempt }}</span>
+              <span class="guess-code">{{ guess.code }}</span>
+              <span
+                class="guess-correct"
+                v-if="mode"
+                :class="{
+                  fail: guess.corect == 0,
+                  something: guess.corect == 1,
+                  better: guess.corect == 2,
+                  almost: guess.corect == 3,
+                }">
+                {{ guess.corect }}</span
+              >
+              <span
+                class="boxes guess-correct"
+                v-else>
+                <div
+                  class="box"
+                  :class="{ corect: guess.digit1 }"></div>
+                <div
+                  class="box"
+                  :class="{ corect: guess.digit2 }"></div>
+                <div
+                  class="box"
+                  :class="{ corect: guess.digit3 }"></div>
+                <div
+                  class="box"
+                  :class="{ corect: guess.digit4 }"></div>
+              </span>
+            </p>
+          </TransitionGroup>
         </div>
       </div>
     </Transition>
@@ -195,7 +233,8 @@
   import { computed, onMounted, onUnmounted, ref } from 'vue'
 
   let attempt = 0
-  const codetype = ref(false),
+  const codeType = ref(false),
+    mode = ref(true),
     guess = ref(''),
     code = ref(''),
     guesses = ref([]),
@@ -219,18 +258,41 @@
       if (guess.value.length) {
         attempt++
         // Logic to check the user's guess
-        const corect = guess.value
+        const correctDigits = guess.value
           .split('')
-          .filter((digit, index) => digit === code.value[index]).length
-        guesses.value.push({ attempt, code: guess.value, corect })
+          .map((digit, index) => digit === code.value[index])
+
+        const guessObject = {
+          attempt,
+          code: guess.value,
+        }
+
+        if (mode.value === false) {
+          // Include correctDigits only when mode.value is false
+          guessObject.digit1 = correctDigits[0]
+          guessObject.digit2 = correctDigits[1]
+          guessObject.digit3 = correctDigits[2]
+          guessObject.digit4 = correctDigits[3]
+        } else {
+          // Include correct count when mode.value is true
+          guessObject.corect = correctDigits.filter(digit => digit).length
+        }
+
+        guesses.value.push(guessObject)
+
         guess.value = ''
-        if (corect === 4) {
+
+        if (correctDigits.every(digit => digit)) {
+          // If all digits are correct, set winner to true
           winner.value = true
         }
       }
     },
     handelDelete = () => {
       guess.value = guess.value.slice(0, -1)
+    },
+    handelClear = () => {
+      guess.value = ''
     },
     addToGuess = e => {
       if (guess.value.length < 4) {
@@ -247,8 +309,12 @@
         handelDelete()
         return
       }
+      if (e.key === 'Escape') {
+        handelClear()
+        return
+      }
       if (guess.value.length < 4) {
-        if (/^[A-Fa-f]$/.test(e.key) & codetype.value) {
+        if (/^[A-Fa-f]$/.test(e.key) & codeType.value) {
           guess.value += e.key.toUpperCase()
           return
         }
@@ -259,7 +325,7 @@
       }
     },
     newGame = () => {
-      code.value = geneNumber(codetype.value)
+      code.value = geneNumber(codeType.value)
       guess.value = ''
       guesses.value = []
       winner.value = false
@@ -281,17 +347,9 @@
 
 <style lang="scss">
   $darkBlue: rgb(31 41 55);
-  * {
-    --toggle-bg-on: rgb(55 65 81);
-    --toggle-bg-off: rgb(55 65 81);
-    --toggle-border-on: rgb(255 255 255);
-    --toggle-border-off: rgb(255 255 255);
-    --toggle-text-on: rgb(255 255 255);
-    --toggle-text-off: rgb(255 255 255);
+  // * {
 
-    --toggle-width: 4rem;
-    --toggle-height: 1.5rem;
-  }
+  // }
   #main {
     height: 100%;
     width: 100%;
@@ -325,6 +383,7 @@
       .section {
         // padding: 1.5rem;
         &.title {
+          padding-bottom: 0;
           h3 {
             letter-spacing: -0.025rem;
             font-weight: 700;
@@ -345,14 +404,43 @@
         &#game-cons {
           display: flex;
           flex-direction: column;
-          #game-mode {
+          .game-mode {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            --toggle-border-off: rgb(255 255 255);
+            // --toggle-bg-off: rgb(55 65 81);
+            --toggle-bg-off: rgb(255 255 255);
+            // --toggle-text-off: rgb(255 255 255);
+            --toggle-text-off: rgb(55 65 81);
+
+            --toggle-bg-on: rgb(55 65 81);
+            --toggle-border-on: rgb(255 255 255);
+            --toggle-text-on: rgb(255 255 255);
+
+            --toggle-width: 5rem;
+            --toggle-height: 1.5rem;
+
+            .toggle-off {
+              --toggle-handle-enabled: rgb(55 65 81);
+
+              font-weight: bolder;
+            }
+            .toggle-container {
+              // border: red solid 1px;
+              width: 25%;
+              margin: auto;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              // --toggle-width: 5rem;
+            }
             label {
+              width: 30%;
               line-height: 1;
               font-weight: 500;
               font-size: 0.875rem;
+              text-align: end;
             }
           }
           #guess {
@@ -363,9 +451,23 @@
             min-height: 2rem;
             p {
               color: rgb(255 255 255);
-              text-align: center;
-
-              // letter-spacing: -0.025rem;
+              &.guess-val {
+                // border: red solid 1px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+              }
+              &.clear {
+                height: 2rem;
+                aspect-ratio: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0;
+                margin-left: auto;
+                border-left: $darkBlue solid 1px;
+              }
             }
           }
           #keypad {
@@ -396,13 +498,17 @@
             justify-content: space-between;
             text-align: center;
             margin: 0.25rem 0;
-            :first-child {
+            .guess-attempt {
+              height: 1.5rem;
               width: 25%;
             }
-            :nth-child(2) {
-              width: 75%;
+            .guess-code {
+              height: 1.5rem;
+              width: 50%;
             }
-            :last-child {
+            .guess-correct {
+              height: 1.5rem;
+
               width: 25%;
               &.fail {
                 color: #ff5714;
@@ -415,6 +521,21 @@
               }
               &.almost {
                 color: #6eeb83;
+              }
+              &.boxes {
+                // gap: 2px;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                .box {
+                  border-radius: 0.15rem;
+                  background-color: #ff5714;
+                  &.corect {
+                    background-color: #6eeb83;
+                  }
+                  height: 1rem;
+                  aspect-ratio: 1;
+                }
               }
             }
           }
