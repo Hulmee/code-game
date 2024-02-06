@@ -14,6 +14,7 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
+      registerType: 'autoUpdate',
       manifest: {
         name: 'Crack the Code ',
         short_name: 'CodeCrack',
