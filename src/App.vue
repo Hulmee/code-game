@@ -26,7 +26,7 @@
             >Decimal</label
           >
           <Toggle
-            v-model="mode"
+            v-model="codetype"
             on-label="Hex"
             off-label="Dec"
             @change="newGame" />
@@ -58,7 +58,7 @@
             3
           </button>
           <button
-            :disabled="!mode"
+            :disabled="!codetype"
             @click="addToGuess"
             value="A">
             A
@@ -79,7 +79,7 @@
             6
           </button>
           <button
-            :disabled="!mode"
+            :disabled="!codetype"
             @click="addToGuess"
             value="B">
             B
@@ -100,13 +100,13 @@
             9
           </button>
           <button
-            :disabled="!mode"
+            :disabled="!codetype"
             @click="addToGuess"
             value="C">
             C
           </button>
           <button
-            :disabled="!mode"
+            :disabled="!codetype"
             @click="addToGuess"
             value="D">
             D
@@ -117,13 +117,13 @@
             0
           </button>
           <button
-            :disabled="!mode"
+            :disabled="!codetype"
             @click="addToGuess"
             value="E">
             E
           </button>
           <button
-            :disabled="!mode"
+            :disabled="!codetype"
             @click="addToGuess"
             value="F">
             F
@@ -155,7 +155,7 @@
           </h4>
           <p
             class="container"
-            v-for="guess in guesses"
+            v-for="guess in sortedGuesses"
             :key="guess.attempt">
             <span>{{ guess.attempt }}</span
             ><span>{{ guess.code }}</span
@@ -195,7 +195,7 @@
   import { computed, onMounted, onUnmounted, ref } from 'vue'
 
   let attempt = 0
-  const mode = ref(false),
+  const codetype = ref(false),
     guess = ref(''),
     code = ref(''),
     guesses = ref([]),
@@ -248,7 +248,7 @@
         return
       }
       if (guess.value.length < 4) {
-        if (/^[A-Fa-f]$/.test(e.key) & mode.value) {
+        if (/^[A-Fa-f]$/.test(e.key) & codetype.value) {
           guess.value += e.key.toUpperCase()
           return
         }
@@ -259,7 +259,7 @@
       }
     },
     newGame = () => {
-      code.value = geneNumber(mode.value)
+      code.value = geneNumber(codetype.value)
       guess.value = ''
       guesses.value = []
       winner.value = false
